@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: replication-configuration
+  labels:
+    qubership.cloud/part-of: disaster-recovery
+    qubership.cloud/used-by: cluster-replicator
+    managedBy: cluster-replicator
+data: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dbaas-dr-profile
+  labels:
+    qubership.cloud/part-of: disaster-recovery
+    qubership.cloud/used-by: cluster-replicator
+    profiles-package-type: default
+data:
+  hot-standby: |-
+    default-replicas: 1
+  cold-standby: |-
+    default-replicas: 1

@@ -1,0 +1,55 @@
+{
+  "cluster-dba": {
+    "password": "someDefaultPassword",
+    "roles": [
+      "NAMESPACE_CLEANER",
+      "DB_CLIENT"
+    ]
+  },
+  "test_only_db_client": {
+    "password": "someDefaultPassword",
+    "roles": [
+      "DB_CLIENT"
+    ]
+  },
+  "test_only_namespace_cleaner": {
+    "password": "someDefaultPassword",
+    "roles": [
+      "NAMESPACE_CLEANER"
+    ]
+  },
+  "test_without_roles": {
+    "password": "someDefaultPassword"
+  },
+  "dbaas-db-editor": {
+    "password": "editor_password",
+    "roles": [
+      "DBAAS_DB_EDITOR"
+    ]
+  },
+  "discr-tool-user": {
+    "password": "someDefaultPassword",
+    "roles": [
+      "DISCR_TOOL_CLIENT"
+    ]
+  },
+  "backup_manager": {
+    "password": "backup_manager",
+    "roles": [
+      "BACKUP_MANAGER"
+    ]
+  },
+  "dbaas-db-editor-client": {
+    "password": "dbaas-db-editor-client",
+    "roles": [
+      "DBAAS_DB_EDITOR",
+      "DB_CLIENT"
+    ]
+  },
+  "migration-client": {
+    "password": "migration-client",
+    "roles": [
+      "MIGRATION_CLIENT"
+    ]
+  }
+}

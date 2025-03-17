@@ -1,0 +1,1 @@
+ALTER TABLE physical_database ADD COLUMN IF NOT EXISTS features jsonb;

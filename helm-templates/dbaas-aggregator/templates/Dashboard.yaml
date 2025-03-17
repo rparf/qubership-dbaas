@@ -1,0 +1,14 @@
+{{ if false }}
+---
+apiVersion: integreatly.org/v1alpha1
+kind: GrafanaDashboard
+metadata:
+  name: dbaas-dashboard
+  labels:
+    app: grafana
+    app.kubernetes.io/name: "{{ .Values.SERVICE_NAME }}"
+    deployment.qubership.org/sessionId: {{ .Values.DEPLOYMENT_SESSION_ID | default "unimplemented" }}
+spec:
+  name: dbaas-dashboard.json
+  json: {{ .Files.Get  "dashboards/dbaas-dashboard.json" | toJson }}
+{{ end }}

@@ -1,0 +1,45 @@
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dbaas-prehook-role-binding
+  namespace: {{ .Values.NAMESPACE }}
+  annotations:
+    "helm.sh/hook": "pre-install, pre-upgrade"
+    "helm.sh/hook-weight": "-201"
+    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
+  labels:
+    app.kubernetes.io/name: {{ .Values.SERVICE_NAME }}
+    deployment.qubership.org/sessionId: {{ .Values.DEPLOYMENT_SESSION_ID | default "unimplemented" }}
+    app.kubernetes.io/part-of: {{ .Values.APPLICATION_NAME | default "dbaas" }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.SERVICE_NAME }}-sa
+    namespace: {{ .Values.NAMESPACE }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: dbaas-prehook-role
+---
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: dbaas-prehook-role
+  namespace: {{ .Values.NAMESPACE }}
+  annotations:
+    "helm.sh/hook": "pre-install,pre-upgrade"
+    "helm.sh/hook-weight": "-202"
+    "helm.sh/hook-delete-policy": "before-hook-creation, hook-succeeded"
+  labels:
+    app.kubernetes.io/name: {{ .Values.SERVICE_NAME }}
+    deployment.qubership.org/sessionId: {{ .Values.DEPLOYMENT_SESSION_ID | default "unimplemented" }}
+    app.kubernetes.io/part-of: {{ .Values.APPLICATION_NAME | default "dbaas" }}
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+      - configmaps
+    verbs:
+      - get
+      - list
+      - create

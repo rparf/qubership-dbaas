@@ -1,0 +1,31 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Values.SERVICE_NAME }}-pre-hook
+  annotations:
+    helm.sh/hook: "pre-install,pre-upgrade"
+    helm.sh/hook-weight: "-100"
+    helm.sh/hook-delete-policy: "before-hook-creation, hook-succeeded"
+  labels:
+    app.kubernetes.io/name: "{{ .Values.SERVICE_NAME }}"
+    deployment.qubership.org/sessionId: {{ .Values.DEPLOYMENT_SESSION_ID | default "unimplemented" }}
+    app.kubernetes.io/part-of: "{{ .Values.APPLICATION_NAME }}"
+spec:
+  backoffLimit: 10
+  template:
+    metadata:
+      name: {{ .Values.SERVICE_NAME }}-pre-hook
+    spec:
+      serviceAccountName: '{{ .Values.SERVICE_NAME }}-sa'
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: "{{ .Values.SERVICE_NAME }}-validation"
+          image: "{{ .Values.DECLARATIVE_HOOK_IMAGE }}"
+          command: ["/prepare-database.sh"]
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - secretRef:
+                name: {{ .Values.SERVICE_NAME }}-env-variables
+      restartPolicy: Never
+{{- end }}

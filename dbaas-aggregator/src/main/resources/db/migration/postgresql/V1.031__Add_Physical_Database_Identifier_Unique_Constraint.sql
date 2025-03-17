@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS physical_database_identifier_unique ON physical_database(physical_database_identifier);

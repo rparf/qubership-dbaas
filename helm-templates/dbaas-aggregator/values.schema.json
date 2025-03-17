@@ -1,0 +1,491 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "type": "object",
+  "title": "The DbaaS-aggregator schema.",
+  "description": "JSON Schema for dbaas-aggregator.",
+  "default": {},
+  "examples": [
+    {
+      "CERTIFICATE_BUNDLE_MD5SUM": "d41d8cd98f00b204e9800998ecf8427e",
+      "PAAS_PLATFORM": "KUBERNETES",
+      "IMAGE_REPOSITORY": "",
+      "NAMESPACE": "",
+      "CLOUD_PUBLIC_HOST": "",
+      "CLOUD_PRIVATE_HOST": "",
+      "REPLICAS": 1,
+      "CPU_REQUEST": "100m",
+      "TAG": "",
+      "POSTGRES_HOST": "pg-patroni.postgresql",
+      "DBAAS_PREMATURE_REGISTRATION_ADAPTER_ADDRESSES": "",
+      "DBAAS_SECURITY_CONFIGURATION_LOCATION": "/etc/dbaas/security",
+      "MEM_ARGS": "-Xms128m -Xmx128m -Xss512k -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=64M -XX:CodeCacheMinimumFreeSpace=4M -XX:CompressedClassSpaceSize=32M -XX:MinMetaspaceExpansion=1M -XX:MaxMetaspaceExpansion=8M -XX:CodeCacheExpansionSize=256k",
+      "MEMORY_LIMIT": "904Mi",
+      "REPLICA_ROLLING_TIMEOUT_SECONDS": 600,
+      "LIVENESS_PROBE_INITIAL_DELAY_SECONDS": 120,
+      "REGION_DBAAS": "database",
+      "NODE_SELECTOR_DBAAS_KEY": "region",
+      "CLOUD_TOPOLOGY_KEY": "kubernetes.io/hostname",
+      "DISABLE_DEPRECATED_API": false,
+      "PAAS_VERSION": ""
+    }
+  ],
+  "definitions": {
+    "integerOrString": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "booleanOrString": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "properties": {
+    "CERTIFICATE_BUNDLE_MD5SUM": {
+      "$id": "#/properties/CERTIFICATE_BUNDLE_MD5SUM",
+      "type": "string",
+      "title": "The CERTIFICATE_BUNDLE_MD5SUM schema",
+      "examples": [
+        "d41d8cd98f00b204e9800998ecf8427e"
+      ],
+      "internal": true
+    },
+    "PAAS_PLATFORM": {
+      "$id": "#/properties/PAAS_PLATFORM",
+      "type": "string",
+      "title": "The PAAS_PLATFORM schema",
+      "description": "PaaS Platform.",
+      "examples": [
+        "KUBERNETES",
+        "OPENSHIFT"
+      ],
+      "internal": true
+    },
+    "IMAGE_REPOSITORY": {
+      "$id": "#/properties/IMAGE_REPOSITORY",
+      "type": "string",
+      "title": "The IMAGE_REPOSITORY schema",
+      "default": "",
+      "internal": true
+    },
+    "TAG": {
+      "$id": "#/properties/TAG",
+      "type": "string",
+      "title": "The TAG schema",
+      "default": "",
+      "internal": true
+    },
+    "NAMESPACE": {
+      "$id": "#/properties/NAMESPACE",
+      "type": "string",
+      "title": "The NAMESPACE schema",
+      "description": "The namespace it is going to be deployed.",
+      "default": "",
+      "internal": true
+    },
+    "SERVICE_NAME": {
+      "$id": "#/properties/SERVICE_NAME",
+      "type": "string",
+      "title": "The SERVICE_NAME schema",
+      "description": "Name of a service.",
+      "internal": true
+    },
+    "DEPLOYMENT_RESOURCE_NAME": {
+      "$id": "#/properties/DEPLOYMENT_RESOURCE_NAME",
+      "type": "string",
+      "title": "The DEPLOYMENT_RESOURCE_NAME schema",
+      "description": "Service Name. For example: domain-resolver-frontend.",
+      "examples": [
+        "domain-resolver-frontend"
+      ],
+      "internal": true
+    },
+    "CLOUD_PUBLIC_HOST": {
+      "$id": "#/properties/CLOUD_PUBLIC_HOST",
+      "type": "string",
+      "title": "The CLOUD_PUBLIC_HOST schema",
+      "description": "PaaS server hostname (Cloud Public host in devops configuration plugin), is used for creating tenant routes.",
+      "default": "",
+      "internal": true
+    },
+    "CLOUD_PRIVATE_HOST": {
+      "$id": "#/properties/CLOUD_PRIVATE_HOST",
+      "type": "string",
+      "title": "The CLOUD_PRIVATE_HOST schema",
+      "description": "PaaS custom hostname.",
+      "default": "",
+      "internal": true
+    },
+    "REPLICAS": {
+      "$id": "#/properties/REPLICAS",
+      "$ref": "#/definitions/integerOrString",
+      "title": "The REPLICAS schema",
+      "internal": true,
+      "envSpecific": true
+    },
+    "POSTGRES_HOST": {
+      "$id": "#/properties/POSTGRES_HOST",
+      "type": "string",
+      "title": "The POSTGRES_HOST schema",
+      "description": "Address of PostgreSQL to store databases info.",
+      "examples": [
+        "pg-patroni.postgresql"
+      ]
+    },
+    "POSTGRES_PORT": {
+      "$id": "#/properties/POSTGRES_PORT",
+      "type": "string",
+      "title": "The POSTGRES_PORT schema",
+      "description": "Port of PostgreSQL to store databases info.",
+      "default": "5432",
+      "examples": [
+        "5432"
+      ]
+    },
+    "DBAAS_PREMATURE_REGISTRATION_ADAPTER_ADDRESSES": {
+      "$id": "#/properties/DBAAS_PREMATURE_REGISTRATION_ADAPTER_ADDRESSES",
+      "type": "string",
+      "title": "The DBAAS_PREMATURE_REGISTRATION_ADAPTER_ADDRESSES schema",
+      "description": "Addresses of the dbaas adapters.",
+      "default": "",
+      "examples": [
+        "http://dbaas-elasticsearch-adapter.elasticsearch5-cluster:8080,http://dbaas-postgres-adapter.postgresql-dbaas:8080,http://dbaas-mongo-adapter.mongo-cluster:8080"
+      ]
+    },
+    "DBAAS_SECURITY_CONFIGURATION_LOCATION": {
+      "$id": "#/properties/DBAAS_SECURITY_CONFIGURATION_LOCATION",
+      "type": "string",
+      "title": "The DBAAS_SECURITY_CONFIGURATION_LOCATION schema",
+      "description": "Location to save security configuration such as users.",
+      "internal": true
+    },
+    "DBAAS_DEFAULT_PHYSICAL_DATABASES_DISABLED": {
+      "$id": "#/properties/DBAAS_DEFAULT_PHYSICAL_DATABASES_DISABLED",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The DBAAS_DEFAULT_PHYSICAL_DATABASES_DISABLED schema",
+      "description": "Disables usage of the default physical database when no dedicated balancing rules are found for microservice/namespace",
+      "default": "false",
+      "examples": [
+        false,
+        true
+      ]
+    },
+    "MEM_ARGS": {
+      "$id": "#/properties/MEM_ARGS",
+      "type": "string",
+      "title": "The MEM_ARGS schema",
+      "internal": true,
+      "envSpecific": true
+    },
+    "MEMORY_LIMIT": {
+      "$id": "#/properties/MEMORY_LIMIT",
+      "type": "string",
+      "title": "The MEMORY_LIMIT schema",
+      "internal": true,
+      "envSpecific": true
+    },
+    "CPU_REQUEST": {
+      "$id": "#/properties/CPU_REQUEST",
+      "$ref": "#/definitions/integerOrString",
+      "title": "The CPU_REQUEST schema",
+      "internal": true,
+      "envSpecific": true
+    },
+    "CPU_LIMIT": {
+      "$id": "#/properties/CPU_LIMIT",
+      "$ref": "#/definitions/integerOrString",
+      "title": "The CPU_LIMIT schema",
+      "internal": true,
+      "envSpecific": true
+    },
+    "REPLICA_ROLLING_TIMEOUT_SECONDS": {
+      "$id": "#/properties/REPLICA_ROLLING_TIMEOUT_SECONDS",
+      "type": "integer",
+      "title": "The REPLICA_ROLLING_TIMEOUT_SECONDS schema",
+      "internal": true
+    },
+    "LIVENESS_PROBE_INITIAL_DELAY_SECONDS": {
+      "$id": "#/properties/LIVENESS_PROBE_INITIAL_DELAY_SECONDS",
+      "type": "integer",
+      "title": "The LIVENESS_PROBE_INITIAL_DELAY_SECONDS schema",
+      "internal": true
+    },
+    "REGION_DBAAS": {
+      "$id": "#/properties/REGION_DBAAS",
+      "type": "string",
+      "title": "The REGION_DBAAS schema",
+      "description": "It indicates a node region where pod will be located.",
+      "examples": [
+        "database"
+      ]
+    },
+    "NODE_SELECTOR_DBAAS_KEY": {
+      "$id": "#/properties/NODE_SELECTOR_DBAAS_KEY",
+      "type": "string",
+      "title": "The NODE_SELECTOR_DBAAS_KEY schema",
+      "description": "Specifies a key value of nodeSelector.",
+      "examples": [
+        "region"
+      ]
+    },
+    "USE_POSTGRES_PORT_FORWARD": {
+      "$id": "#/properties/USE_POSTGRES_PORT_FORWARD",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The USE_POSTGRES_PORT_FORWARD schema",
+      "description": "If your deployer has direct access to postgresql database then you should not create and use postgresql port-forward during DBaaS installation.",
+      "default": true,
+      "examples": [
+        true,
+        false
+      ]
+    },
+    "POSTGRES_DBA_USER": {
+      "$id": "#/properties/POSTGRES_DBA_USER",
+      "type": "string",
+      "title": "The POSTGRES_DBA_USER schema",
+      "description": "Postgresql user with SUPERUSER privilege.",
+      "default": "postgres",
+      "examples": [
+        "postgres"
+      ]
+    },
+    "POSTGRES_DBA_PASSWORD": {
+      "$id": "#/properties/POSTGRES_DBA_PASSWORD",
+      "type": "string",
+      "title": "The POSTGRES_DBA_PASSWORD schema",
+      "description": "Password for postgresql user with SUPERUSER privilege."
+    },
+    "POSTGRES_DBAAS_DATABASE_NAME": {
+      "$id": "#/properties/POSTGRES_DBAAS_DATABASE_NAME",
+      "type": "string",
+      "title": "The POSTGRES_DBAAS_DATABASE_NAME schema",
+      "description": "These parameters are needed for connecting to Postgresql physical database where DBaaS will store its own data.",
+      "default": "<namespace>"
+    },
+    "POSTGRES_DBAAS_USER": {
+      "$id": "#/properties/POSTGRES_DBAAS_USER",
+      "type": "string",
+      "title": "The POSTGRES_DBAAS_USER schema",
+      "description": "Postgresql user for created database.",
+      "default": "postgres",
+      "examples": [
+        "postgres"
+      ]
+    },
+    "POSTGRES_DBAAS_PASSWORD": {
+      "$id": "#/properties/POSTGRES_DBAAS_PASSWORD",
+      "type": "string",
+      "title": "The POSTGRES_DBAAS_PASSWORD schema",
+      "description": "Password for postgresql user for created database."
+    },
+    "DBAAS_RECREATE_DEPLOYMENT_STRATEGY": {
+      "$id": "#/properties/DBAAS_RECREATE_DEPLOYMENT_STRATEGY",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The DBAAS_RECREATE_DEPLOYMENT_STRATEGY schema",
+      "description": "This parameter changes deployment strategy from rolling to recreate.",
+      "default": false,
+      "example": [
+        true,
+        false
+      ]
+    },
+    "RUN_DBAAS_SMOKE": {
+      "$id": "#/properties/RUN_DBAAS_SMOKE",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The RUN_DBAAS_SMOKE schema",
+      "description": "Parameters used to set all Autosmoke can be performed during DBaaS deploy.",
+      "default": false,
+      "example": [
+        true,
+        false
+      ]
+    },
+    "RUN_SMOKE_POSTGRES": {
+      "$id": "#/properties/RUN_SMOKE_POSTGRES",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The RUN_SMOKE_POSTGRES schema",
+      "description": "Parameters used to set postgres Autosmoke can be performed during DBaaS deploy.",
+      "default": false,
+      "example": [
+        true,
+        false
+      ]
+    },
+    "RUN_SMOKE_MONGO": {
+      "$id": "#/properties/RUN_SMOKE_MONGO",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The RUN_SMOKE_MONGO schema",
+      "description": "Parameters used to set mongo Autosmoke can be performed during DBaaS deploy.",
+      "default": false,
+      "example": [
+        true,
+        false
+      ]
+    },
+    "RUN_SMOKE_OPENSEARCH": {
+      "$id": "#/properties/RUN_SMOKE_OPENSEARCH",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The RUN_SMOKE_OPENSEARCH schema",
+      "description": "Parameters used to set opensearch Autosmoke can be performed during DBaaS deploy.",
+      "default": false,
+      "example": [
+        true,
+        false
+      ]
+    },
+    "DBAAS_OWN_PG_DB_CREATED_MANUALLY": {
+      "$id": "#/properties/DBAAS_OWN_PG_DB_CREATED_MANUALLY",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The DBAAS_OWN_PG_DB_CREATED_MANUALLY schema",
+      "description": "Setting this parameter to true disables automatic database creation by dbaas and allows user to use his own database, username and password which could be created manually.",
+      "default": false,
+      "example": [
+        true,
+        false
+      ]
+    },
+    "DBAAS_DB_EDITOR_CREDENTIALS_USERNAME": {
+      "$id": "#/properties/DBAAS_DB_EDITOR_CREDENTIALS_USERNAME",
+      "type": "string",
+      "title": "The DBAAS_DB_EDITOR_CREDENTIALS_USERNAME schema",
+      "description": "This credentials are for role dbaas-db-editor.",
+      "default": "dbaas-db-editor"
+    },
+    "DBAAS_DB_EDITOR_CREDENTIALS_PASSWORD": {
+      "$id": "#/properties/DBAAS_DB_EDITOR_CREDENTIALS_PASSWORD",
+      "type": "string",
+      "title": "The DBAAS_DB_EDITOR_CREDENTIALS_PASSWORD schema",
+      "description": "This credentials are for role dbaas-db-editor."
+    },
+    "DBAAS_CLUSTER_DBA_CREDENTIALS_USERNAME": {
+      "$id": "#/properties/DBAAS_CLUSTER_DBA_CREDENTIALS_USERNAME",
+      "type": "string",
+      "title": "The DBAAS_CLUSTER_DBA_CREDENTIALS_USERNAME schema",
+      "description": "This credentials are for role cluster-dba.",
+      "default": "cluster-dba",
+      "internal": true
+    },
+    "DBAAS_CLUSTER_DBA_CREDENTIALS_PASSWORD": {
+      "$id": "#/properties/DBAAS_CLUSTER_DBA_CREDENTIALS_PASSWORD",
+      "type": "string",
+      "title": "The DBAAS_CLUSTER_DBA_CREDENTIALS_PASSWORD schema",
+      "description": "This credentials are for role cluster-dba.",
+      "internal": true
+    },
+    "BACKUP_DAEMON_DBAAS_ACCESS_USERNAME": {
+      "$id": "#/properties/BACKUP_DAEMON_DBAAS_ACCESS_USERNAME",
+      "type": "string",
+      "title": "The BACKUP_DAEMON_DBAAS_ACCESS_USERNAME schema",
+      "description": "This credentials are for role dbaasbackup.",
+      "default": "dbaasbackup"
+    },
+    "BACKUP_DAEMON_DBAAS_ACCESS_PASSWORD": {
+      "$id": "#/properties/BACKUP_DAEMON_DBAAS_ACCESS_PASSWORD",
+      "type": "string",
+      "title": "The BACKUP_DAEMON_DBAAS_ACCESS_PASSWORD schema",
+      "description": "This credentials are for role dbaasbackup."
+    },
+    "DBAAS_TENANT_USERNAME": {
+      "$id": "#/properties/DBAAS_TENANT_USERNAME",
+      "type": "string",
+      "title": "The DBAAS_TENANT_USERNAME schema",
+      "description": "This credentials are for role dbaas-tenant.",
+      "default": "dbaas-tenant"
+    },
+    "DBAAS_TENANT_PASSWORD": {
+      "$id": "#/properties/DBAAS_TENANT_PASSWORD",
+      "type": "string",
+      "title": "The DBAAS_TENANT_PASSWORD schema",
+      "description": "This credentials are for role dbaas-tenant."
+    },
+    "DISCR_TOOL_USER_USERNAME": {
+      "$id": "#/properties/DISCR_TOOL_USER_USERNAME",
+      "type": "string",
+      "title": "The DISCR_TOOL_USER_USERNAME schema",
+      "description": "This credentials are for role discr_tool_user."
+    },
+    "DISCR_TOOL_USER_PASSWORD": {
+      "$id": "#/properties/DISCR_TOOL_USER_PASSWORD",
+      "type": "string",
+      "title": "The DISCR_TOOL_USER_PASSWORD schema",
+      "description": "This credentials are for role discr_tool_user."
+    },
+    "PRODUCTION_MODE": {
+      "$id": "#/properties/PRODUCTION_MODE",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The PRODUCTION_MODE schema",
+      "description": "If PRODUCTION_MODE is set to true, dropping databases in dbaas is not allowed.",
+      "default": true
+    },
+    "DISABLE_DEPRECATED_API": {
+      "$id": "#/properties/DISABLE_DEPRECATED_API",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The DISABLE_DEPRECATED_API schema",
+      "description": "Is deprecated REST API should be disabled",
+      "default": false
+    },
+    "READONLY_CONTAINER_FILE_SYSTEM_ENABLED": {
+      "$id": "#/properties/READONLY_CONTAINER_FILE_SYSTEM_ENABLED",
+      "$ref": "#/definitions/booleanOrString",
+      "title": "The READONLY_CONTAINER_FILE_SYSTEM_ENABLED schema",
+      "description": "Read-only container file system is enabled",
+      "examples": [
+        false
+      ]
+    },
+    "CLOUD_TOPOLOGY_KEY": {
+      "$id": "#/properties/CLOUD_TOPOLOGY_KEY",
+      "type": "string",
+      "title": "The CLOUD_TOPOLOGY_KEY schema",
+      "description": "Affinity key.",
+      "examples": [
+        "kubernetes.io/hostname"
+      ]
+    },
+    "PAAS_VERSION": {
+      "$id": "#/properties/PAAS_VERSION",
+      "type": "string",
+      "title": "The PAAS_VERSION schema",
+      "description": "This parameter specify paas where this service is deployed.",
+      "default": "",
+      "internal": true
+    },
+    "LOG_LEVEL": {
+      "$id": "#/properties/LOG_LEVEL",
+      "type": "string",
+      "title": "The LOG_LEVEL schema",
+      "description": "Log level for service.",
+      "default": "info",
+      "examples": [
+        "info",
+        "debug",
+        "warn"
+      ],
+      "internal": true
+    },
+    "CLOUD_TOPOLOGIES": {
+      "$id": "#/properties/CLOUD_TOPOLOGIES",
+      "type": "array",
+      "title": "Topologies settings for topologySpreadConstraints",
+      "description": "Array of topologies settings for topologySpreadConstraints. Each array item must contain at least 'topologyKey' attribute. Other supported attributes are 'maxSkew' and 'whenUnsatisfiable' - optional.",
+      "default": "- topologyKey: kubernetes.io/hostname",
+      "internal": true,
+      "examples": [
+        "- topologyKey: kubernetes.io/hostname"
+      ]
+    }
+  },
+  "additionalProperties": true
+}

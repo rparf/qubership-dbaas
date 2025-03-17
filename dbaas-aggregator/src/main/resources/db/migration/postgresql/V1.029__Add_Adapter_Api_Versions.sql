@@ -1,0 +1,1 @@
+ALTER TABLE external_adapter_registration ADD COLUMN IF NOT EXISTS api_versions text;

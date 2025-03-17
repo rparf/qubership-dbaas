@@ -1,0 +1,191 @@
+{{- $arg := .Values.APPLICATION_NAME | default "dbaas" -}}
+{{- $b64p := tpl (.Files.Get "data/policy.json") $ | b64enc }}
+{{- $sha1sum := sha1sum $b64p }}
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+    name: '{{ .Values.SERVICE_NAME }}'
+    labels:
+        name: '{{ .Values.SERVICE_NAME }}'
+        app.kubernetes.io/name: "{{ .Values.SERVICE_NAME }}"
+        deployment.qubership.org/sessionId: {{ .Values.DEPLOYMENT_SESSION_ID | default "unimplemented" }}
+spec:
+    replicas: {{ .Values.REPLICAS | default 1 }}
+    strategy:
+{{ if  (.Values.DBAAS_RECREATE_DEPLOYMENT_STRATEGY) }}
+        type: Recreate
+{{ else }}
+        type: RollingUpdate
+        rollingUpdate:
+            maxSurge: 25%
+            maxUnavailable: 25%
+{{ end }}
+    template:
+        metadata:
+            labels:
+                name: '{{ .Values.SERVICE_NAME }}'
+        spec:
+            nodeSelector:
+                {{ .Values.NODE_SELECTOR_DBAAS_KEY }}: '{{ .Values.REGION_DBAAS }}'
+            serviceAccountName: '{{ .Values.SERVICE_NAME }}'
+            volumes:
+            -   name: dbaas-security-configuration-volume
+                secret:
+                    secretName: 'dbaas-security-configuration-secret'
+        {{ if .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED }}
+            -   name: tmp
+                emptyDir: {}
+            -   name: env
+                emptyDir: {}
+            -   name: ncdiag
+                emptyDir: {}
+            -   name: glowroot
+                emptyDir: {}
+            -   name: nss
+                emptyDir: {}
+            -   name: java-certs
+                emptyDir: {}
+            -   name: secret
+                emptyDir: {}
+        {{ end }}        
+            containers:
+            -   name: '{{ .Values.SERVICE_NAME }}'
+                image: '{{ .Values.IMAGE_REPOSITORY }}:{{ .Values.TAG }}'
+                volumeMounts:
+                -   name: dbaas-security-configuration-volume
+                    mountPath: '{{ .Values.DBAAS_SECURITY_CONFIGURATION_LOCATION }}'
+                    readOnly: true
+            {{ if .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED }}
+                -   name: tmp
+                    mountPath: /tmp
+                -   name: env
+                    mountPath: /etc/env
+                -   name: ncdiag
+                    mountPath: /app/ncdiag
+                -   name: glowroot
+                    mountPath: /app/glowroot
+                -   name: nss
+                    mountPath: /app/nss
+                -   name: java-certs
+                    mountPath: /etc/ssl/certs/java
+                -   name: secret
+                    mountPath: /etc/secret
+            {{ end }}
+                args:
+                - java
+                - '{{ .Values.MEM_ARGS }}'
+                - -Djava.security.egd=file:/dev/./urandom
+                - -jar
+                - --add-opens=java.base/java.util.concurrent=ALL-UNNAMED
+                - /app/dbaas-aggregator-2.0.0-SNAPSHOT.jar
+                ports:
+                -   name: web
+                    containerPort: 8080
+                    protocol: TCP
+                env:
+                -   name : "DBAAS_SECURITY_CONFIGURATION_SECRET_SHA1SUM"
+                    value: {{ $sha1sum }}
+                -   name: DBAAS_SECURITY_CONFIGURATION_LOCATION
+                    value: '{{ .Values.DBAAS_SECURITY_CONFIGURATION_LOCATION }}'
+                -   name: SYM_KEY
+                    valueFrom:
+                        secretKeyRef:
+                            name: '{{ .Values.SERVICE_NAME }}-encryption-secret'
+                            key: 'sym-key'
+                -   name: KS_DEFAULT_KEY
+                    valueFrom:
+                        secretKeyRef:
+                            name: '{{ .Values.SERVICE_NAME }}-encryption-secret'
+                            key: 'default-key'
+                -   name: DBAAS_PREMATURE_REGISTRATION_ADAPTER_ADDRESSES
+                    value: '{{ .Values.DBAAS_PREMATURE_REGISTRATION_ADAPTER_ADDRESSES }}'
+                -   name: DBAAS_DEFAULT_PHYSICAL_DATABASES_DISABLED
+                    value: '{{ .Values.DBAAS_DEFAULT_PHYSICAL_DATABASES_DISABLED }}'
+                -   name: CLOUD_NAMESPACE
+                    valueFrom:
+                        fieldRef:
+                            fieldPath: 'metadata.namespace'
+                -   name: MICROSERVICE_NAME
+                    value: '{{ .Values.SERVICE_NAME }}'
+                -   name: POSTGRES_HOST
+                    value: '{{ .Values.POSTGRES_HOST }}'
+                -   name: POSTGRES_PORT
+                    value: '{{ .Values.POSTGRES_PORT }}'
+                -   name: POSTGRES_USER
+                    valueFrom:
+                        secretKeyRef:
+                            name: 'dbaas-storage-credentials'
+                            key: 'username'
+                -   name: POSTGRES_PASSWORD
+                    valueFrom:
+                        secretKeyRef:
+                            name: 'dbaas-storage-credentials'
+                            key: 'password'
+                -   name: POSTGRES_DATABASE
+                    valueFrom:
+                        secretKeyRef:
+                            name: 'dbaas-storage-credentials'
+                            key: 'database'
+                -   name: CLOUD_PUBLIC_HOST
+                    value: '{{ .Values.CLOUD_PUBLIC_HOST }}'
+                -   name: PRODUCTION_MODE
+                    value: '{{ .Values.PRODUCTION_MODE }}'
+                -   name: DISABLE_DEPRECATED_API
+                    value: '{{ .Values.DISABLE_DEPRECATED_API }}'
+                -   name: DBAAS_LOG_LEVEL
+                    value: '{{ .Values.DBAAS_LOG_LEVEL }}'
+                resources:
+                    requests:
+                        cpu: '{{ .Values.CPU_REQUEST }}'
+                        memory: '{{ .Values.MEMORY_LIMIT }}'
+                    limits:
+                        memory: '{{ .Values.MEMORY_LIMIT }}'
+                        cpu: '{{ .Values.CPU_LIMIT }}'
+                livenessProbe:
+                    httpGet:
+                        path: /probes/live
+                        port: web
+                        scheme: HTTP
+                    initialDelaySeconds: {{ .Values.LIVENESS_PROBE_INITIAL_DELAY_SECONDS }}
+                    timeoutSeconds: 15
+                readinessProbe:
+                    httpGet:
+                        path: /probes/ready
+                        port: web
+                        scheme: HTTP
+                    initialDelaySeconds: 30
+                    timeoutSeconds: 15
+                securityContext:
+                    readOnlyRootFilesystem: {{ .Values.READONLY_CONTAINER_FILE_SYSTEM_ENABLED }}
+                    runAsNonRoot: true
+                {{ if eq .Values.PAAS_PLATFORM "KUBERNETES" }}
+                    runAsGroup: 10001
+                {{ end }}
+                    seccompProfile:
+                        type: RuntimeDefault
+                    allowPrivilegeEscalation: false
+                    capabilities:
+                        drop:
+                          - ALL
+            topologySpreadConstraints:
+{{- if .Values.CLOUD_TOPOLOGIES }}
+{{- range $v := .Values.CLOUD_TOPOLOGIES }}
+            - topologyKey: {{ $v.topologyKey }}
+              maxSkew: {{ $v.maxSkew | default 1 }}
+              whenUnsatisfiable: {{ $v.whenUnsatisfiable | default "ScheduleAnyway" }}
+              labelSelector:
+                matchLabels:
+                  name: "{{ .Values.SERVICE_NAME }}"
+{{- end }}
+{{- else }}
+            -   maxSkew: 1
+                topologyKey: "{{ .Values.CLOUD_TOPOLOGY_KEY }}"
+                whenUnsatisfiable: ScheduleAnyway
+                labelSelector:
+                    matchLabels:
+                        name: "{{ .Values.SERVICE_NAME }}"
+{{- end }}
+    selector:
+        matchLabels:
+            name: '{{ .Values.SERVICE_NAME }}'
