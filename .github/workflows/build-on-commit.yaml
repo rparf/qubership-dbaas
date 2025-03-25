@@ -7,12 +7,10 @@ jobs:
   mvn:
     uses: netcracker/qubership-workflow-hub/.github/workflows/maven-publish.yml@main
     with:
-      maven-command: "--batch-mode deploy -DskipTests"
-      server-id: github
-      java-version: 21
+      maven-command: "--batch-mode package"
+      server-id: "github"
     secrets:
       maven-token: ${{ secrets.GITHUB_TOKEN }}
-      # sonar-token: ${{ secrets.SONAR_TOKEN }}
 
   call-docker-publish:
     runs-on: ubuntu-latest
