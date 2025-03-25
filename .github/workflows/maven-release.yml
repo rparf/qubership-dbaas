@@ -109,6 +109,7 @@ jobs:
       java-version: ${{ github.event.inputs.java-version }}
       upload-artifact: true
       artifact-id: ${{ needs.update-pom-version.outputs.artifact_id }}
+      server-id: "github"
     secrets:
       maven-token: ${{ secrets.GITHUB_TOKEN }} 
 
@@ -158,7 +159,7 @@ jobs:
       artifact-id: ${{ needs.update-pom-version.outputs.artifact_id }}
       dry-run: ${{ inputs.dry-run }}
       download-artifact: true
-
+      
   github-release:
     needs: [tag]
     uses: netcracker/qubership-workflow-hub/.github/workflows/release-drafter.yml@main
