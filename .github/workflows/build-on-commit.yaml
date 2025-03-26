@@ -20,8 +20,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      #   with:
-      #     ref: ${{ github.event.ref }}
+        with:
+          ref: ${{ github.event.ref }}
 
       - uses: rparf/qubership-workflow-hub/actions/docker-publish@main
         with:
