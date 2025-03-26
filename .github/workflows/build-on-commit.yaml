@@ -18,8 +18,14 @@ jobs:
     name: Docker Publish
     needs: mvn
     steps:
+      # - name: Checkout repository
+      #   uses: actions/checkout@v4
+      #   with:
+      #     ref: ${{  }}
+
+          # fetch-depth: 0  
       - uses: rparf/qubership-workflow-hub/actions/docker-publish@main
         with:
           artifact-id: "artifact"
           download-artifact: true
-          ref: ${{github.event.ref}}
+          ref: ${{ github.event.ref }}
