@@ -20,5 +20,5 @@ jobs:
     steps:
       - uses: rparf/qubership-workflow-hub/actions/docker-publish@main
         with:
-          artifact-id: "dbaas-aggregator"
+          artifact-id: "artifact"
           download-artifact: true
