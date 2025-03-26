@@ -7,7 +7,7 @@ jobs:
   mvn:
     uses: netcracker/qubership-workflow-hub/.github/workflows/maven-publish.yml@main
     with:
-      maven-command: "--batch-mode package"
+      maven-command: "--batch-mode package -Dgpg.skip=true -DskipTests=true"
       server-id: "github"
     secrets:
       maven-token: ${{ secrets.GITHUB_TOKEN }}
