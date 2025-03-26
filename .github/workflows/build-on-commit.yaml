@@ -22,3 +22,4 @@ jobs:
         with:
           artifact-id: "artifact"
           download-artifact: true
+          ref: ${{github.event.ref}}
