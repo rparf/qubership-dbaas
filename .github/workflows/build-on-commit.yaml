@@ -9,6 +9,7 @@ jobs:
     with:
       maven-command: "--batch-mode package -Dgpg.skip=true -DskipTests=true"
       server-id: "github"
+      upload-artifact: true
     secrets:
       maven-token: ${{ secrets.GITHUB_TOKEN }}
 
