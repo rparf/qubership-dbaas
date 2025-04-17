@@ -74,3 +74,4 @@ jobs:
             ghcr.io/${{ needs.prepare-variables.outputs.repo }}:${{ needs.prepare-variables.outputs.tag_build_number }}
             ghcr.io/${{ needs.prepare-variables.outputs.repo }}:${{ needs.prepare-variables.outputs.tag_snapshot }}
           platforms: linux/amd64
+          build-args: BASE_PATH=dbaas-aggregator/target
