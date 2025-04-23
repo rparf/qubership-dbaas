@@ -1,0 +1,10 @@
+{
+    "components": [
+        {
+            "name": "dbaas-service",
+            "file": "./Dockerfile",
+            "context": "./"
+        }
+    ],
+    "platforms": "linux/amd64,linux/arm64"
+}
