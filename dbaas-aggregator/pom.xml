@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dbaas-aggregator-parent</artifactId>
         <groupId>org.qubership.cloud</groupId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>4.0.2-SNAPSHOT</version>
         <relativePath>../dbaas-aggregator-parent</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -259,7 +259,12 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <scm>
+        <connection>scm:git:https://github.com/rparf/qubership-dbaas.git</connection>
+        <developerConnection>scm:git:https://github.com/rparf/qubership-dbaas.git</developerConnection>
+        <url>https://github.com/rparf/qubership-dbaas.git</url>
+        <tag>HEAD</tag>
+    </scm>
     <build>
         <plugins>
             <plugin>
@@ -290,6 +295,11 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+            <plugin>
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <version>${quarkus-plugin.version}</version>
@@ -307,6 +317,53 @@
         </plugins>
     </build>
     <profiles>
+        <!-- Maven Central -->
+        <!-- mvn deploy -P central -->
+        <profile>
+            <id>central</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>0.7.0</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <publishingServerId>central</publishingServerId>
+                            <autoPublish>true</autoPublish>
+                            <waitUntil>published</waitUntil>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+            <distributionManagement>
+                <repository>
+                    <id>central</id>
+                    <name>Central Maven Repository</name>
+                    <snapshots>
+                        <enabled>true</enabled>
+                    </snapshots>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <!-- GitHub packages -->
+        <!-- mvn deploy -P github -->
+        <profile>
+            <id>github</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <name>GitHub Packages</name>
+                    <url>https://maven.pkg.github.com/myborislavrorg/qubership-core-error-handling</url>
+                </repository>
+            </distributionManagement>
+        </profile>
         <profile>
             <id>native</id>
             <activation>
@@ -342,4 +399,46 @@
             </properties>
         </profile>
     </profiles>
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/myborislavrorg/*</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>github-nc</id>
+            <url>https://maven.pkg.github.com/netcracker/*</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>oss.sonatype.org-snapshot</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>oss.sonatype.org</id>
+            <url>https://central.sonatype.com</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
