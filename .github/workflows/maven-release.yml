@@ -21,11 +21,11 @@ name: Dbaas Release
 on:
   workflow_dispatch:
     inputs:
-      version:
+      version-type:
+        description: 'Version type to release. Can be one of [major, minor, patch]'
         required: true
-        default: ''
+        default: 'patch'
         type: string
-        description: 'Release version (e.g., 1.0.0)'
       java_version:
         required: false
         type: string
