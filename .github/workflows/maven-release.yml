@@ -89,6 +89,10 @@ jobs:
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
           dry-run: 'false'
   check-tag:
+    needs : [publish]
+    if: ${{ needs.publish.result == 'success' }}
+    outputs:
+      tag-exists: ${{ steps.check_tag.outputs.tag-exists }}
     runs-on: ubuntu-latest
     steps:
       - name: Check if tag exists
@@ -134,9 +138,9 @@ jobs:
           echo "components=${components}" >> $GITHUB_OUTPUT
           echo "platforms=${platforms}" >> $GITHUB_OUTPUT
   prepare-chart:
+      needs: [check-tag]
       permissions:
         contents: write
-      needs: [check-tag]
       runs-on: ubuntu-latest
       steps:
       - name: Change Chart Version Action
