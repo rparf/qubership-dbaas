@@ -402,7 +402,7 @@
     <repositories>
         <repository>
             <id>github</id>
-            <url>https://maven.pkg.github.com/myborislavrorg/*</url>
+            <url>https://maven.pkg.github.com/rparf/*</url>
             <releases>
                 <enabled>true</enabled>
             </releases>
